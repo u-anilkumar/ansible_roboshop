@@ -1,0 +1,55 @@
+- name: configuring catalogue server
+  hosts: catalogue
+  become: yes
+  vars:
+    m_host: "mongodb-dev.anildevops.online"
+  tasks:
+    - name: enabling nodejs
+      ansible.builtin.command: dnf module enable nodejs:20 -y
+    - name: installing nodejs
+      ansible.builtin.dnf:
+        name: nodejs
+        state: present
+    - name: create app directory
+      ansible.builtin.file:
+        path: /app
+        state: directory
+    - name: create roboshop user
+      ansible.builtin.user:
+        name: roboshop
+        system: true
+        shell : "/sbin/nologin"
+        home: "/app"
+    - name: Download code
+      ansible.builtin.get_url:
+        url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
+        dest: tmp/catalogue.zip
+    - name:  unzip code
+      anisble.builtin.unarchive:
+        src: /tmp/catalogue.zip
+        dest: /app
+        remote_src: yes
+    - name: installig dependencies
+      path: /app
+      state: present
+    - name: create systemd service
+      ansible.builtin.copy:
+        src: catalogue.service
+        dest: /etc/systemd/system/catalogue.service
+    - name: to realod daemon
+      ansible.builtin.systemd_service:
+        daemon_reload: yes
+    - name: copy mongo repo
+      ansible.builtin.copy:
+        src: mongo.repo
+        dest: /etc/yum.repos.d/mongo.repo
+    - name: install mongo client
+      ansible.builtin.dnf:
+        name: mongodb-mongosh
+        state: present
+    - name: load schema into DOB
+      community.mongodb.mongodb_shell:
+        login_host: "{{ m_host }}"
+        login_port: 27017
+        file: /app/db/master-data.js
+        idempotent: true
