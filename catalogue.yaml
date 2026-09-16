@@ -53,4 +53,4 @@
         login_host: "{{ m_host }}"
         login_port: 27017
         file: /app/db/master-data.js
-        idempotent: true
+        
