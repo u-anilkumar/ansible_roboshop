@@ -34,6 +34,7 @@
         value: "{{ IP }}"
         type: A
         ttl: 1
+        overwrite: true
       when: NAME != "frontend"
     - name: update route53 records for frontend
       amazon.aws.route53:
@@ -43,4 +44,5 @@
         value: "{{ IP }}"
         type: A
         ttl: 1
+        overwrite: true
       when: NAME == "frontend"
