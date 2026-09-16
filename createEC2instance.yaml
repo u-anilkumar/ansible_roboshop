@@ -15,7 +15,7 @@
       register: output_EC2.instances
     - name: print output_EC2
       ansible.builtin.debug:
-        msg: "{{ output_EC2. }}"
+        msg: "{{ output_EC2.instances }}"
         
       
       
