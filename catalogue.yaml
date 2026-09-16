@@ -48,9 +48,6 @@
       ansible.builtin.dnf:
         name: mongodb-mongosh
         state: present
-    - name: load schema into DB
-      community.mongodb.mongodb_shell:
-        login_host: "{{ m_host }}"
-        login_port: 27017
-        file: /app/db/master-data.js
+    - name: loading schema
+      ansible.builtin.shell: mongosh --host "{{ m_host }}" </app/db/master-data.js
         
