@@ -8,14 +8,18 @@
   tasks:
     - name: create EC2
       amazon.aws.ec2_instance:
-        name: "mongoDB"
+        name: {{ item }}
         security_group: "{{ SG_ID }}"
         image_id: "{{ AMI_ID }}"
         instance_type: "{{ INS_TYPE }}"
+      loop:
+        - catalogue
+        - user
       register: output_EC2
     - name: print output_EC2
       ansible.builtin.debug:
-        msg: "{{ output_EC2.instances }}"
+        msg: "{{ output_EC2.instance_ids }}"
+    - name: Get IP address from Instance ID
         
       
       
