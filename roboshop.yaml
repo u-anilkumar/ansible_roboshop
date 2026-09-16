@@ -3,7 +3,7 @@
   connection: local
   vars:
     sg_id: "sg-03dde207ea3271219"
-    ins_type: "t3.mmicro"
+    ins_type: "t3.micro"
     ami_id: "ami-0220d79f3f480ecf5"
     envr: "dev"
     domain: "anildevops.online"
