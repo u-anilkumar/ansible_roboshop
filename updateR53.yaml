@@ -33,7 +33,7 @@
         record: "{{ NAME }}.{{HOSTED_ZONE}}"
         value: "{{ IP }}"
         type: A
-        ttl: 0
+        ttl: 1
       when: NAME != "frontend"
     - name: update route53 records for frontend
       amazon.aws.route53:
@@ -42,5 +42,5 @@
         record: "{{HOSTED_ZONE}}"
         value: "{{ IP }}"
         type: A
-        ttl: 0
+        ttl: 1
       when: NAME == "frontend"

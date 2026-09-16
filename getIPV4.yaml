@@ -17,11 +17,11 @@
         image_id: "{{ AMI_ID }}"
         instance_type: "{{ INS_TYPE }}"
       register: output_EC2
-    - name: get Public or privtae IP based on name
+    - name: get privtae IP based on name
       ansible.builtin.set_fact:
         IP: "{{ output_EC2.instances[0].private_ip_address }}"
       when: NAME != "frontend"
-    - name: get Public IP based on name
+    - name: get Public IP for fronted
       ansible.builtin.set_fact:
         IP: "{{ output_EC2.instances[0].public_ip_address }}"
       when: NAME == "frontend"
