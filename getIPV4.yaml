@@ -19,7 +19,7 @@
       register: output_EC2
     - name: get Public or privtae IP based on name
       ansible.builtin.debug:
-        msg "{{ output_EC2.instances[0].private_ip_address }}"
+        msg: "{{ output_EC2.instances[0].private_ip_address }}"
       when: NAME != "frontend"
       register: IP
     - name: get Public IP based on name
