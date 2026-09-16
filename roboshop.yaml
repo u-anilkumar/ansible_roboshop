@@ -18,9 +18,9 @@
         instance_type: "{{ ins_type }}"
         name: "{{ item }}-{{ envr }}"
         tags:
-          - Environment: "dev"
-          - Name: "{{ item }}-{{ envr }}"
-          - Project: "Roboshop"
+          Environment: "dev"
+          Name: "{{ item }}-{{ envr }}"
+          Project: "Roboshop"
       loop: "{{ instances }}"
       register: ec2_output
     - name: create r53 records
