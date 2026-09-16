@@ -25,7 +25,7 @@
         url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
         dest: tmp/catalogue.zip
     - name:  unzip code
-      anisble.builtin.unarchive:
+      ansible.builtin.unarchive:
         src: /tmp/catalogue.zip
         dest: /app
         remote_src: yes
@@ -47,7 +47,7 @@
       ansible.builtin.dnf:
         name: mongodb-mongosh
         state: present
-    - name: load schema into DOB
+    - name: load schema into DB
       community.mongodb.mongodb_shell:
         login_host: "{{ m_host }}"
         login_port: 27017
