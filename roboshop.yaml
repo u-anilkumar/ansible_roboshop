@@ -7,7 +7,7 @@
     ami_id: "ami-0220d79f3f480ecf5"
     envr: "dev"
     domain: "anildevops.online"
-    action: "create"
+    action_task: "create"
     instances:
       - mongodb
       - catalogue
@@ -23,7 +23,7 @@
           Name: "{{ item }}-{{ envr }}"
           Project: "Roboshop"
       loop: "{{ instances }}"
-      when: action == "create"
+      when: action_task == "create"
       register: ec2_output
     - name: create r53 records
       amazon.aws.route53:
@@ -36,7 +36,7 @@
         overwrite: true
         wait: true
       loop: "{{ ec2_output.results }}"
-      when: action == "create"
+      when: action_task == "create"
     - name: create r53 records
       amazon.aws.route53:
         state: present
@@ -49,7 +49,7 @@
       loop: "{{ ec2_output.results }}"
       when: 
         - item.item == "frontend"
-        - action == "create"
+        - action_task == "create"
     - name: Deleting Ec2 instances
       amazon.aws.ec2_instance:
         state: absent
@@ -58,11 +58,12 @@
         instance_type: "{{ ins_type }}"
         name: "{{ item }}-{{ envr }}"
       loop: "{{ instances }}"
-      when: action == "delete"
+      when: action_task == "delete"
     - name: delete r53 records
       amazon.aws.route53:
         state: absent
         zone: "{{ domain }}"
         record: "{{ item }}-{{ envr }}.{{ domain }}"
+        type: A
       loop: "{{ instances }}"
-      when: action == "delete"
+      when: action_task_task == "delete"
