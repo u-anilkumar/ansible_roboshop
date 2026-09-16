@@ -13,6 +13,7 @@
         security_group: "{{ SG_ID }}"
         image_id: "{{ AMI_ID }}"
         instance_type: "{{ INS_TYPE }}"
+        region: us-east-1
       register: output_EC2
     - name: print output_EC2
       ansible.builtin.debug:
