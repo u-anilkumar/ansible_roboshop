@@ -1,0 +1,29 @@
+- name: creating EC2 instance
+  hosts: local
+  connection: local
+  vars:
+    AMI_ID: "ami-0220d79f3f480ecf5"
+    SG_ID: "sg-03dde207ea3271219"
+    INS_TYPE: "t3.micro"
+  vars_prompt:
+    - name: NAME
+      prompt: "Enter EC2 instance name to be created"
+      private: false
+  tasks:
+    - name: create EC2
+      amazon.aws.ec2_instance:
+        name: "{{ NAME }}"
+        security_group: "{{ SG_ID }}"
+        image_id: "{{ AMI_ID }}"
+        instance_type: "{{ INS_TYPE }}"
+      register: output_EC2
+    - name: get Public or privtae IP based on name
+      ansible.builtin.debug:
+        msg "{{ output_EC2.instances[0].private_ip_address }}"
+      when: NAME != "frontend"
+      register: IP
+    - name: get Public IP based on name
+      ansible.builtin.debug:
+        msg "{{ output_EC2.instances[0].public_ip_address }}"
+      when: NAME == "frontend"
+      register: IP
