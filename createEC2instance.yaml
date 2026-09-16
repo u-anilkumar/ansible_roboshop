@@ -12,10 +12,10 @@
         security_group: "{{ SG_ID }}"
         image_id: "{{ AMI_ID }}"
         instance_type: "{{ INS_TYPE }}"
-      register: output_EC2
+      register: output_EC2.instances
     - name: print output_EC2
       ansible.builtin.debug:
-        msg: "{{ output_EC2 }}"
+        msg: "{{ output_EC2. }}"
         
       
       
