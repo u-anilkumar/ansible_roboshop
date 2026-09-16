@@ -1,0 +1,45 @@
+- name: creating EC2 instance and route 53 records
+  hosts: local
+  connection: local
+  vars:
+    sg_id: "sg-03dde207ea3271219"
+    ins_type: "t3.mmicro"
+    ami_id: "ami-0220d79f3f480ecf5"
+    envr: "dev"
+    domain: "anildevops.online"
+    instances:
+      - mongodb
+      - catalogue
+  tasks:
+    - name: creating Ec2 instances
+      amazon.aws.ec2_instance:
+        image_id: "{{ ami_id }}"
+        security_group: "{{ sg_id }}"
+        instance_type: "{{ ins_type }}"
+        name: "{{ item }}-{{ envr }}"
+        tags:
+          - Environment: "dev"
+          - Name: "{{ item }}-{{ envr }}"
+          - Project: "Roboshop"
+      loop: {{ instances }}
+      register: ec2_output
+    - name: create r53 records
+      amazon.aws.route53:
+        state: present
+        zone: "{{ domain }}"
+        record: "{{ item.item }}-{{ envr }}.{{ domain }}" #mongodb-dev.anildevops.online
+        value: "{{ item.instances[0].private_ip_address }}"
+        ttl: 1
+        overwrite: true
+        wait: true
+      loop: {{ ec2_output.results }}
+    - name: create r53 records
+      amazon.aws.route53:
+        state: present
+        zone: "{{ domain }}"
+        record: "{{ item.item }}-{{ envr }}.{{ domain }}" #mongodb-dev.anildevops.online
+        value: "{{ item.instances[0].public_ip_address }}"
+        ttl: 1
+        overwrite: true
+      loop: {{ ec2_output.results }}
+      when: {{ item.item }} == "frontend"
