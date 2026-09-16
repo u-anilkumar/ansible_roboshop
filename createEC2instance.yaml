@@ -19,7 +19,7 @@
     - name: print output_EC2
       ansible.builtin.debug:
         msg: "{{ output_EC2.instance_ids }}"
-    - name: Get IP address from Instance ID
+    
         
       
       
