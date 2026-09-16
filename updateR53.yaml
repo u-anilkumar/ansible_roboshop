@@ -5,6 +5,7 @@
     AMI_ID: "ami-0220d79f3f480ecf5"
     SG_ID: "sg-03dde207ea3271219"
     INS_TYPE: "t3.micro"
+    HOSTED_ZONE: "anildevops.online"
   vars_prompt:
     - name: NAME
       prompt: "Enter EC2 instance name to be created"
@@ -25,6 +26,21 @@
       ansible.builtin.set_fact:
         IP: "{{ output_EC2.instances[0].public_ip_address }}"
       when: NAME == "frontend"
-    - name: printing IP public_ip_address
-      ansible.builtin.debug:
-        msg: "IP Address is {{ IP }}"
+    - name: update route53 recors
+      amazon.aws.route53:
+        state: present
+        zone: "{{ HOSTED_ZONE }}"
+        record: "{{ NAME }}.{{HOSTED_ZONE}}"
+        value: "{{ IP }}"
+        type: A
+        ttl: 0
+      when: NAME != "frontend"
+    - name: update route53 records for frontend
+      amazon.aws.route53:
+        state: present
+        zone: "{{ HOSTED_ZONE }}"
+        record: "{{HOSTED_ZONE}}"
+        value: "{{ IP }}"
+        type: A
+        ttl: 0
+      when: NAME == "frontend"
