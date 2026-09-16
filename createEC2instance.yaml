@@ -1,7 +1,6 @@
 - name: creating EC2 instance
   hosts: local
   connection: local
-  become: yes
   vars:
     AMI_ID: "ami-0220d79f3f480ecf5"
     SG_ID: "sg-03dde207ea3271219"
@@ -13,7 +12,6 @@
         security_group: "{{ SG_ID }}"
         image_id: "{{ AMI_ID }}"
         instance_type: "{{ INS_TYPE }}"
-        region: us-east-1
       register: output_EC2
     - name: print output_EC2
       ansible.builtin.debug:
