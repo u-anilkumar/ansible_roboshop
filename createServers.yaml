@@ -1,0 +1,48 @@
+- name: creating EC2 instance
+  hosts: local
+  connection: local
+  vars:
+    AMI_ID: "ami-0220d79f3f480ecf5"
+    SG_ID: "sg-03dde207ea3271219"
+    INS_TYPE: "t3.micro"
+    HOSTED_ZONE: "anildevops.online"
+  vars_prompt:
+    - name: NAME
+      prompt: "Enter EC2 instance name to be created"
+      private: false
+  tasks:
+    - name: create EC2
+      amazon.aws.ec2_instance:
+        name: "{{ NAME }}"
+        security_group: "{{ SG_ID }}"
+        image_id: "{{ AMI_ID }}"
+        instance_type: "{{ INS_TYPE }}"
+      register: output_EC2
+    - name: get Public or privtae IP based on name
+      ansible.builtin.set_fact:
+        IP: "{{ output_EC2.instances[0].private_ip_address }}"
+      when: NAME != "frontend"
+    - name: get Public IP based on name
+      ansible.builtin.set_fact:
+        IP: "{{ output_EC2.instances[0].public_ip_address }}"
+      when: NAME == "frontend"
+    - name: update route53 recors
+      amazon.aws.route53:
+        state: present
+        zone: "{{ HOSTED_ZONE }}"
+        record: "{{ NAME }}.{{HOSTED_ZONE}}"
+        value: "{{ IP }}"
+        type: A
+        ttl: 1
+        overwrite: true
+      when: NAME != "frontend"
+    - name: update route53 records for frontend
+      amazon.aws.route53:
+        state: present
+        zone: "{{ HOSTED_ZONE }}"
+        record: "{{HOSTED_ZONE}}"
+        value: "{{ IP }}"
+        type: A
+        ttl: 1
+        overwrite: true
+      when: NAME == "frontend"
