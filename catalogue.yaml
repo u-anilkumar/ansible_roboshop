@@ -50,4 +50,8 @@
         state: present
     - name: loading schema
       ansible.builtin.shell: mongosh --host "{{ m_host }}" </app/db/master-data.js
+    - name: enable and start the service
+      ansible.builtin.service:
+        name: catalogue
+        state: started
         
