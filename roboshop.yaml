@@ -21,7 +21,7 @@
           - Environment: "dev"
           - Name: "{{ item }}-{{ envr }}"
           - Project: "Roboshop"
-      loop: "{{ instances }}""
+      loop: "{{ instances }}"
       register: ec2_output
     - name: create r53 records
       amazon.aws.route53:
@@ -32,7 +32,7 @@
         ttl: 1
         overwrite: true
         wait: true
-      loop: "{{ ec2_output.results }}""
+      loop: "{{ ec2_output.results }}"
     - name: create r53 records
       amazon.aws.route53:
         state: present
@@ -41,5 +41,5 @@
         value: "{{ item.instances[0].public_ip_address }}"
         ttl: 1
         overwrite: true
-      loop: "{{ ec2_output.results }}""
+      loop: "{{ ec2_output.results }}"
       when: '{{ item.item }} == "frontend"'
