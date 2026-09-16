@@ -29,6 +29,7 @@
         zone: "{{ domain }}"
         record: "{{ item.item }}-{{ envr }}.{{ domain }}" #mongodb-dev.anildevops.online
         value: "{{ item.instances[0].private_ip_address }}"
+        type: A
         ttl: 1
         overwrite: true
         wait: true
@@ -39,6 +40,7 @@
         zone: "{{ domain }}"
         record: "{{ item.item }}-{{ envr }}.{{ domain }}" #mongodb-dev.anildevops.online
         value: "{{ item.instances[0].public_ip_address }}"
+        type: A
         ttl: 1
         overwrite: true
       loop: "{{ ec2_output.results }}"
