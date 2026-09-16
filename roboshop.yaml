@@ -48,7 +48,7 @@
         overwrite: true
       loop: "{{ ec2_output.results }}"
       when: 
-        - item.item == "frontend"'
+        - item.item == "frontend"
         - action == "create"
     - name: Deleting Ec2 instances
       amazon.aws.ec2_instance:
