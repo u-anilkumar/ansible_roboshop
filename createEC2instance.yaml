@@ -18,7 +18,7 @@
       register: output_EC2
     - name: print output_EC2
       ansible.builtin.debug:
-        msg: "{{ output_EC2 }}"
+        msg: "{{ output_EC2.results[0].instance_id }}"
     
         
       
