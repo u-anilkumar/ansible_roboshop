@@ -3,9 +3,9 @@
   connection: local
   become: yes
   vars:
-    AMI_ID= "ami-0220d79f3f480ecf5"
-    SG_ID= "sg-03dde207ea3271219"
-    INS_TYPE= "t3.micro"
+    AMI_ID: "ami-0220d79f3f480ecf5"
+    SG_ID: "sg-03dde207ea3271219"
+    INS_TYPE: "t3.micro"
   tasks:
     - name: create EC2
       amazon.aws.ec2_instance:
