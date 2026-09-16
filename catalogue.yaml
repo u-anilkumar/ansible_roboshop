@@ -30,8 +30,9 @@
         dest: /app
         remote_src: yes
     - name: installig dependencies
-      path: /app
-      state: present
+      ansible.builtin.npm:
+        path: /app
+        state: present
     - name: create systemd service
       ansible.builtin.copy:
         src: catalogue.service
