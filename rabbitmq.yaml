@@ -1,22 +1,26 @@
-- name: copyig rabbitmq.repo 
-  ansible.builtin.copy:
-    src: rabbitmq.repo
-    dest: /etc/yum.repos.d/rabbitmq.repo
-- name: installing rabbitmq
-  ansible.builtin.dnf:
-    name: rabbitmq-server
-    state: present
-- name: enabling and starting
-  ansible.builtin.service:
-    name: rabbitmq-server
-    start: started
-    enabled: true
-- name: Ensure roboshop user exists in RabbitMQ natively
-  community.rabbitmq.rabbitmq_user:
-    user: roboshop
-    password: roboshop123
-    vhost: /
-    configure_priv: ".*"
-    read_priv: ".*"
-    write_priv: ".*"
-    state: present
+- name: configuring rabbitmq
+  hosts: rabbitmq
+  become: yes
+  tasks:
+    - name: copyig rabbitmq.repo 
+      ansible.builtin.copy:
+        src: rabbitmq.repo
+        dest: /etc/yum.repos.d/rabbitmq.repo
+    - name: installing rabbitmq
+      ansible.builtin.dnf:
+        name: rabbitmq-server
+        state: present
+    - name: enabling and starting
+      ansible.builtin.service:
+        name: rabbitmq-server
+        start: started
+        enabled: true
+    - name: Ensure roboshop user exists in RabbitMQ natively
+      community.rabbitmq.rabbitmq_user:
+        user: roboshop
+        password: roboshop123
+        vhost: /
+        configure_priv: ".*"
+        read_priv: ".*"
+        write_priv: ".*"
+        state: present
