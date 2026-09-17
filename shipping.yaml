@@ -1,0 +1,65 @@
+- name: configuring shipping
+  hosts: shipping
+  become: yes
+  vars:
+    sql_host: mysql-dev.anildevops.online
+  tasks:
+    - name: installing java
+      ansible.builtin.dnf:
+        name: maven
+        state: present
+    - name: creating system user and home directory
+      ansible.builtin.user:
+        name: roboshop
+        home: /app
+        system: true
+        create_home: true
+        shell: /sbin/nologin
+    - name: download code
+      ansible.builtin.get_url:
+        url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip
+        dest: /tmp/shipping.zip
+    - name: unzip code
+      ansible.builtin:unarchive:
+      src: /tmp/shipping.zip
+      dest: /app
+      remote_src: true
+    - name: install dependecies
+      ansible.builtin.command: mvn clean package
+    - name: moving shipping.jar
+      ansible.builtin.copy:
+        src: /app/target/shipping-1.0.jar
+        dest: /app/shipping.jar
+        remote_src: true
+    - name: create systemd service for shipping
+      ansible.builtin.copy:
+        src: shipping.service
+        dest: /etc/systemd/system/shipping.service
+    - name: daemon-reload
+      ansible.builtin.systemd_service:
+        daemon-reload: true
+    - name: install mysql clinet
+      ansible.builtin.dnf:
+        name: mysql
+        state: present
+    - name: check if sql db is loaded
+      ansible.builtin.command: 
+        cmd: "mysql -h {{ sql_host }} -uroot -pRoboShop@1 -e 'use cities'""
+      ignore_errors: true
+      register: sql_op
+      changed_when: false
+
+    - name: load schemas in mysql
+      ansible.builtin.shell: 
+        cmd: "mysql -h {{ sql_host }} -uroot -pRoboShop@1 < /app/db/{{ item }}.sql"
+      loop:
+        - schema
+        - app-user
+        - master-data
+      when: sql_op.rc != 0
+    - name: enabling and starting shipping
+      ansible.builtin.service:
+        name: shipping
+        enabled: true
+        state: started
+

@@ -1,0 +1,23 @@
+- name: configuring frontend
+  hosts: frontend
+  become: yes
+  tasks:
+    - name: enabling nginx
+      ansible.builtin.command: dnf module enable nginx:1.24 -y
+    - name: installing nginx
+      ansible.builtin.dnf:
+        name: nginx
+        state: present
+    - name: starting and enabling nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+    - name: removing default code
+      ansible.builtin.file:
+        path: /usr/share/nginx/html/
+        recurse: true
+      register: files_op
+    - name: print files_op
+      ansible.builtin.debug:
+        msg: "{{ files_op }}"
