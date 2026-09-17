@@ -44,7 +44,7 @@
         state: present
     - name: check if sql db is loaded
       ansible.builtin.command: 
-        cmd: "mysql -h {{ sql_host }} -uroot -pRoboShop@1 -e 'use cities'""
+        cmd: "mysql -h {{ sql_host }} -uroot -pRoboShop@1 -e 'use cities'"
       ignore_errors: true
       register: sql_op
       changed_when: false

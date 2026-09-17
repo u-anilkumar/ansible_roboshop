@@ -14,10 +14,21 @@
         state: started
         enabled: true
     - name: removing default code
-      ansible.builtin.file:
-        path: /usr/share/nginx/html/
-        recurse: true
-      register: files_op
-    - name: print files_op
-      ansible.builtin.debug:
-        msg: "{{ files_op }}"
+      ansible.builtin.command: rm -rf /usr/share/nginx/html/*
+    - name: download  frontend code 
+      ansible.builtin.get_url:
+        url: https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
+        dest: /tmp/frontend.zip
+    - name: unzipping code in html directory
+      ansible.builtin.unarchive:
+        src: /tmp/frontend.zip
+        dest: /usr/share/nginx/html/
+        remote_src: true
+    - name: configure reverse proxy
+      ansible.builtin.copy:
+        src: nginx.conf
+        dest: /etc/nginx/nginx.conf
+    - name: Restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
