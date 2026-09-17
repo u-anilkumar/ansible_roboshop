@@ -9,7 +9,6 @@
           - python3-pip
           - python3-devel     # Provides Python header files needed by uwsgi
           - gcc               # The C compiler missing from your server
-          - python3-wheel
         state: present
     - name: creating sys user and create app directory
       ansible.builtin.user:
