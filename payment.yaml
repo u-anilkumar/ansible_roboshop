@@ -19,13 +19,13 @@
         dest: /tmp/payment.zip
     - name: unzip code
       ansible.builtin:unarchive:
-      src: /tmp/payment.zip
-      dest: /app
-      remote_src: true
+        src: /tmp/payment.zip
+        dest: /app
+        remote_src: true
     - name: install dependecies
       ansible.builtin.pip:
         requirements: /app/requirements.txt
-    - name: create sys d service
+    - name: create sysd service
       ansible.builtin.copy:
         src: payment.service
         dest: /etc/systemd/system/payment.service
