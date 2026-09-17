@@ -41,7 +41,7 @@
       amazon.aws.route53:
         state: present
         zone: "{{ domain }}"
-        record: "{{ item.item }}-{{ envr }}.{{ domain }}" #mongodb-dev.anildevops.online
+        record: "{{ domain }}" #anildevops.online
         value: "{{ item.instances[0].public_ip_address }}"
         type: A
         ttl: 1
