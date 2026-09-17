@@ -19,11 +19,11 @@
       ansible.builtin.get_url:
         url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip
         dest: /tmp/shipping.zip
-    - name: unzip code
+    - name: unarchive code
       ansible.builtin.unarchive:
-      src: /tmp/shipping.zip
-      dest: /app
-      remote_src: true
+        src: /tmp/shipping.zip
+        dest: /app
+        remote_src: true
     - name: install dependecies
       ansible.builtin.command: mvn clean package
     - name: moving shipping.jar
@@ -37,7 +37,7 @@
         dest: /etc/systemd/system/shipping.service
     - name: daemon-reload
       ansible.builtin.systemd_service:
-        daemon-reload: true
+        daemon_reload: true
     - name: install mysql clinet
       ansible.builtin.dnf:
         name: mysql
